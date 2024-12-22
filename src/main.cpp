@@ -5,19 +5,18 @@
 
 #include "HTML.hpp"
 #include "log.hpp"
+#include "constants.hpp"
 
-OneWire onewire(7);
+OneWire onewire(TEMP_SENSOR_PIN);
 DallasTemperature sensor(&onewire);
 
-byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-const IPAddress ip(192, 168, 0, 177);
+const IPAddress ip(IP_ADDRESS);
 
-EthernetServer server(80);
+EthernetServer server(SERVER_PORT);
 
 void setup() {
       LOG_BEGIN(9600);
-      ARDUINO_LOGI(uint32_t(ip))
-      Ethernet.begin(mac, ip);
+      Ethernet.begin(MAC_ADDRESS, ip);
 
       if (EthernetNoHardware == Ethernet.hardwareStatus())
       {
