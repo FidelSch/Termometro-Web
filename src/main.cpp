@@ -4,6 +4,7 @@
 #include <DallasTemperature.h>
 
 #include "HTML.hpp"
+#include "log.hpp"
 
 OneWire onewire(7);
 DallasTemperature sensor(&onewire);
@@ -14,6 +15,8 @@ const IPAddress ip(192, 168, 0, 177);
 EthernetServer server(80);
 
 void setup() {
+      LOG_BEGIN(9600);
+      ARDUINO_LOGI(uint32_t(ip))
       Ethernet.begin(mac, ip);
 
       if (EthernetNoHardware == Ethernet.hardwareStatus())
