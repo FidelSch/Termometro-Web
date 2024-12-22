@@ -3,7 +3,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-OneWire onewire(2);
+#include "HTML.hpp"
+
+OneWire onewire(7);
 DallasTemperature sensor(&onewire);
 
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -26,6 +28,7 @@ void setup() {
             delay(1000);
       }
 
+      sensor.begin();
       // start the server
       server.begin();
 }
@@ -47,17 +50,21 @@ void loop()
                         if (c == '\n' && currentLineIsBlank) // Request end
                         {
                               // send a standard HTTP response header
-                              client.println("HTTP/1.1 200 OK");
-                              client.println("Content-Type: text/html");
-                              client.println("Connection: close"); // the connection will be closed after completion of the response
-                              client.println("Refresh: 5");        // refresh the page automatically every 5 sec
-                              client.println();
-                              client.println("<!DOCTYPE HTML>");
+                              HTML::print_header(client);
+
                               client.println("<html>");
+                              HTML::print_head(client);
 
                               sensor.requestTemperatures();
 
-                              client.println(sensor.getTempCByIndex(0));
+                              client.println("<body>");
+
+                              client.println("<div>");
+                              client.println("<h2  style='font-size: 4em;'>Temperatura actual</h2>");
+                              client.println("<p style='font-size: 8em;'>" + String(sensor.getTempCByIndex(0)) + "C</p>");
+                              client.println("</div>");
+
+                              client.println("</body>");
 
                               client.println("</html>");
                               break;
